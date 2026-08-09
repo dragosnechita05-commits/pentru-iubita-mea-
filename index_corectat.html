@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Pentru tine ❤️</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0; min-height:100vh; overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:linear-gradient(135deg,#fff1f5,#ffe4ec,#fff8fa);
+  color:#3d2630;
+}
+.page{
+  width:min(92vw,620px); min-height:430px; padding:35px 22px;
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; animation:appear .4s ease;
+}
+.page.active{display:flex}
+h1{font-size:clamp(28px,7vw,45px);line-height:1.2}
+p{font-size:clamp(20px,5vw,26px);line-height:1.5;margin:0 0 28px}
+.buttons{display:flex;gap:18px;justify-content:center;align-items:center;min-height:70px;width:100%}
+button{
+  border:0;border-radius:999px;padding:14px 28px;font-size:18px;font-weight:700;
+  cursor:pointer;box-shadow:0 7px 18px rgba(80,30,50,.15);
+  -webkit-tap-highlight-color:transparent;touch-action:none;
+}
+.yes{background:#ff5c86;color:white}.no{background:white;color:#c53d61}
+.response{font-size:clamp(24px,6vw,38px);font-weight:750;line-height:1.3;max-width:580px}
+.small{font-size:15px;line-height:1.45;max-width:470px;margin-top:15px;color:#6b4a55}
+.heart{font-size:52px;margin-bottom:15px;animation:beat 1.2s infinite}
+.final-text{font-size:clamp(30px,7vw,48px);font-weight:700;line-height:1.25}
+.floating-heart{position:fixed;bottom:-30px;pointer-events:none;animation:floatUp 4s linear forwards}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes floatUp{from{transform:translateY(0);opacity:.8}to{transform:translateY(-110vh);opacity:0}}
+</style>
+</head>
+<body>
+
+<section class="page active" id="page1">
+  <div class="heart">❤️</div>
+  <p>Hei iubita mea, sunt iubitul tău tocilar și am niște întrebări 😅<br>Ai chef să răspunzi?</p>
+  <div class="buttons" id="p1buttons">
+    <button class="yes" id="p1yes">DA ❤️</button>
+    <button class="no" id="p1no">NU 😭</button>
+  </div>
+  <div id="p1message"></div>
+</section>
+
+<section class="page" id="page2">
+  <p>Crezi că ne-am atașat prea mult unul de celălalt în ultimul timp?</p>
+  <div class="buttons">
+    <button class="yes" id="p2yes">DA</button>
+    <button class="no" id="p2no">NU</button>
+  </div>
+</section>
+
+<section class="page" id="page3">
+  <p>Mă vezi în viitorul tău?</p>
+  <div class="buttons">
+    <button class="yes" id="p3yes">DA ❤️</button>
+    <button class="no" id="p3no">NU 😭</button>
+  </div>
+</section>
+
+<section class="page" id="page4">
+  <div class="heart">❤️</div>
+  <div class="final-text">Mulțumesc, pentru că ai apărut în viața mea</div>
+</section>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  $(id).classList.add("active");
+}
+
+function moveButton(btn){
+  const margin=15;
+  const x=margin+Math.random()*Math.max(1,window.innerWidth-btn.offsetWidth-margin*2);
+  const y=margin+Math.random()*Math.max(1,window.innerHeight-btn.offsetHeight-margin*2);
+  btn.style.position="fixed";
+  btn.style.left=x+"px";
+  btn.style.top=y+"px";
+  btn.style.zIndex="100";
+}
+
+/* PAGINA 1: DA fuge exact de 3 ori */
+let dodges=0;
+function page1Yes(e){
+  e.preventDefault();
+  e.stopPropagation();
+  if(dodges < 3){
+    dodges++;
+    moveButton($("p1yes"));
+  }else{
+    showPage("page2");
+  }
+}
+$("p1yes").addEventListener("pointerdown",page1Yes);
+$("p1yes").addEventListener("touchstart",page1Yes,{passive:false});
+
+$("p1no").addEventListener("click",()=>{
+  $("p1buttons").style.display="none";
+  $("p1message").innerHTML=
+  '<div class="response">Știam eu că nu mă mai iubești, nu mai ai chef de mine 😭😭😭</div>'+
+  '<div class="small">Vezi fraiero că butonul ăla fuge doar de 3 ori, a 4-a oară te lasă să îl apeși, pregătește-te și pt următoarele 😂</div>';
+});
+
+/* PAGINA 2 */
+$("p2yes").addEventListener("click",()=>{
+  $("page2").innerHTML='<div class="response">Scrie-mi despre asta.</div>';
+  setTimeout(()=>showPage("page3"),2200);
+});
+$("p2no").addEventListener("click",()=>{
+  $("page2").innerHTML='<div class="response">Te iubesc din tot sufletul meu și te-aș vrea lângă mine ca un egoist, tot timpul ❤️❤️❤️</div>';
+  setTimeout(()=>showPage("page3"),2800);
+});
+
+/* PAGINA 3: DA fuge mereu */
+function page3Yes(e){
+  e.preventDefault();
+  e.stopPropagation();
+  moveButton($("p3yes"));
+}
+$("p3yes").addEventListener("pointerdown",page3Yes);
+$("p3yes").addEventListener("touchstart",page3Yes,{passive:false});
+
+$("p3no").addEventListener("click",()=>{
+  $("page3").innerHTML='<div class="response">Ghinion, am stabilit azi noapte pe la 00:00 că nu ne mai scăpăm unul de celălalt 😂</div>';
+  setTimeout(()=>showPage("page4"),3000);
+});
+
+/* Inimioare pe ultima pagină */
+setInterval(()=>{
+  if($("page4").classList.contains("active")){
+    const h=document.createElement("div");
+    h.className="floating-heart";
+    h.textContent=["❤️","💕","💗","💖"][Math.floor(Math.random()*4)];
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=(18+Math.random()*18)+"px";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),4200);
+  }
+},650);
+</script>
+</body>
+</html>
