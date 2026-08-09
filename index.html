@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pentru tine ❤️</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #fff1f5, #ffe4ec, #fff8fa);
+    color: #3d2630;
+    overflow: hidden;
+  }
+  .page {
+    width: min(92vw, 620px);
+    min-height: 430px;
+    padding: 42px 25px;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    animation: appear .45s ease;
+  }
+  .page.active { display: flex; }
+  h1 {
+    font-size: clamp(28px, 7vw, 45px);
+    line-height: 1.2;
+    margin: 0 0 18px;
+  }
+  p {
+    font-size: clamp(19px, 4.8vw, 25px);
+    line-height: 1.5;
+    margin: 0 0 30px;
+  }
+  .buttons {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    min-height: 70px;
+  }
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 14px 27px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 7px 18px rgba(80, 30, 50, .15);
+    transition: transform .2s ease, left .18s ease, top .18s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .yes, .primary {
+    background: #ff5c86;
+    color: white;
+  }
+  .no {
+    background: white;
+    color: #c53d61;
+  }
+  .small {
+    font-size: 15px;
+    line-height: 1.45;
+    max-width: 470px;
+    margin-top: 15px;
+    color: #6b4a55;
+  }
+  .heart {
+    font-size: 52px;
+    margin-bottom: 15px;
+    animation: beat 1.2s infinite;
+  }
+  .final-text {
+    font-size: clamp(30px, 7vw, 48px);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .response {
+    font-size: clamp(25px, 6vw, 38px);
+    font-weight: 750;
+    line-height: 1.3;
+    max-width: 580px;
+  }
+  .tiny {
+    margin-top: 12px;
+    font-size: 14px;
+  }
+  .floating-heart {
+    position: fixed;
+    bottom: -30px;
+    pointer-events: none;
+    animation: floatUp 4s linear forwards;
+    opacity: .8;
+  }
+  @keyframes appear {
+    from { opacity: 0; transform: translateY(15px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes beat {
+    0%,100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+  @keyframes floatUp {
+    from { transform: translateY(0) rotate(0deg); opacity: .8; }
+    to { transform: translateY(-110vh) rotate(25deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<section class="page active" id="page1">
+  <div class="heart">❤️</div>
+  <p>Hei iubita mea, sunt iubitul tău tocilar și am niște întrebări 😅<br>
+  Ai chef să răspunzi?</p>
+  <div class="buttons" id="p1buttons">
+    <button class="yes" id="p1yes">DA ❤️</button>
+    <button class="no" id="p1no">NU 😭</button>
+  </div>
+  <div id="p1message"></div>
+</section>
+
+<section class="page" id="page2">
+  <p>Crezi că ne-am atașat prea mult unul de celălalt în ultimul timp?</p>
+  <div class="buttons">
+    <button class="yes" onclick="page2Yes()">DA</button>
+    <button class="no" onclick="page2No()">NU</button>
+  </div>
+</section>
+
+<section class="page" id="page3">
+  <p>Mă vezi în viitorul tău?</p>
+  <div class="buttons">
+    <button class="yes" id="p3yes">DA ❤️</button>
+    <button class="no" onclick="page3No()">NU 😭</button>
+  </div>
+</section>
+
+<section class="page" id="page4">
+  <div class="heart">❤️</div>
+  <div class="final-text">Mulțumesc, pentru că ai apărut în viața mea</div>
+</section>
+
+<script>
+let p1Dodges = 0;
+const p1yes = document.getElementById("p1yes");
+const p1no = document.getElementById("p1no");
+
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+function moveButton(button) {
+  const padding = 12;
+  const maxX = window.innerWidth - button.offsetWidth - padding;
+  const maxY = window.innerHeight - button.offsetHeight - padding;
+  const x = Math.max(padding, Math.random() * maxX);
+  const y = Math.max(padding, Math.random() * maxY);
+
+  button.style.position = "fixed";
+  button.style.left = x + "px";
+  button.style.top = y + "px";
+  button.style.zIndex = 10;
+}
+
+// Pagina 1: DA fuge de exact 3 ori, apoi poate fi apăsat.
+function p1Dodge(e) {
+  if (p1Dodges < 3) {
+    e.preventDefault();
+    p1Dodges++;
+    moveButton(p1yes);
+  } else {
+    showPage("page2");
+  }
+}
+p1yes.addEventListener("pointerdown", p1Dodge);
+
+p1no.addEventListener("click", () => {
+  document.getElementById("p1buttons").style.display = "none";
+  document.getElementById("p1message").innerHTML = `
+    <div class="response">Știam eu că nu mă mai iubești, nu mai ai chef de mine 😭😭😭</div>
+    <div class="small">Vezi fraiero că butonul ăla fuge doar de 3 ori, a 4-a oară te lasă să îl apeși, pregătește-te și pt următoarele 😂</div>
+  `;
+});
+
+// Pagina 2
+function page2Yes() {
+  document.querySelector("#page2 .buttons").style.display = "none";
+  document.querySelector("#page2").innerHTML = `
+    <div class="response">Scrie-mi despre asta.</div>
+  `;
+  setTimeout(() => showPage("page3"), 2200);
+}
+function page2No() {
+  document.querySelector("#page2 .buttons").style.display = "none";
+  document.querySelector("#page2").innerHTML = `
+    <div class="response">Te iubesc din tot sufletul meu și te-aș vrea lângă mine ca un egoist, tot timpul ❤️❤️❤️</div>
+  `;
+  setTimeout(() => showPage("page3"), 2800);
+}
+
+// Pagina 3: DA fuge permanent.
+const p3yes = document.getElementById("p3yes");
+function dodgeForever(e) {
+  e.preventDefault();
+  moveButton(p3yes);
+}
+p3yes.addEventListener("pointerdown", dodgeForever);
+
+function page3No() {
+  document.querySelector("#page3 .buttons").style.display = "none";
+  document.querySelector("#page3").innerHTML = `
+    <div class="response">Ghinion, am stabilit azi noapte pe la 00:00 că nu ne mai scăpăm unul de celălalt 😂</div>
+  `;
+  setTimeout(() => showPage("page4"), 3000);
+}
+
+// Inimioare discrete pe ultima pagină
+setInterval(() => {
+  if (document.getElementById("page4").classList.contains("active")) {
+    const h = document.createElement("div");
+    h.className = "floating-heart";
+    h.textContent = ["❤️","💕","💗","💖"][Math.floor(Math.random()*4)];
+    h.style.left = Math.random()*100 + "vw";
+    h.style.fontSize = (18 + Math.random()*18) + "px";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 4200);
+  }
+}, 650);
+</script>
+</body>
+</html>
